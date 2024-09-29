@@ -1,8 +1,10 @@
 'use client';
 
+import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -13,8 +15,11 @@ import {
 } from "@/components/ui/form"
 import { authFormSchema } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
+import { signIn, signUp } from '@/lib/actions/user.action';
+
 
 const AuthForm = ({ type, }: { type: string }) => {
+  const router = useRouter();
   const [user, setUser] = useState();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -29,12 +34,25 @@ const AuthForm = ({ type, }: { type: string }) => {
   })
 
   // 2. Define a submit handler.
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    setIsLoading(true)
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values)
-    setIsLoading(false)
+  const onSubmit = async (formData: z.infer<typeof formSchema>) => {
+    try {
+      setIsLoading(true)
+      // DO request
+      if (type === 'sign-up') {
+        const newUser = await signUp(formData);
+        setUser(newUser);
+      }
+
+      if (type === 'sign-in') {
+        const bodyData = { email: formData.email, password: formData.password }
+        const response = await signIn(bodyData);
+        if (response) { router.push('/') }
+      }
+    } catch (e) {
+      console.log(e)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -94,6 +112,12 @@ const AuthForm = ({ type, }: { type: string }) => {
                     name="address1"
                     label="Address"
                     placeholder="Enter your address"
+                  />
+                  <CustomInput
+                    control={form.control}
+                    name="city"
+                    label="City"
+                    placeholder="Example: London"
                   />
                   <div className="flex gap-4">
                     <CustomInput
@@ -159,7 +183,7 @@ const AuthForm = ({ type, }: { type: string }) => {
               className="form-link"
               href={type === "sign-in" ? '/sign-up' : '/sign-in'}
             >
-              {type === "sign-in" ? 'Sign In' : 'Sign Up'}
+              {type === "sign-in" ? 'Sign Up' : 'Sign In'}
             </Link>
           </footer>
         </>
