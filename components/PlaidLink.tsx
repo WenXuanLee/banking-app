@@ -35,7 +35,7 @@ const PlaidLink = ({ user, variant }: PlaidLinkProps) => {
     <>
       {variant === 'primary' ? (
         <Button
-          onClick={() => open}
+          onClick={() => open()}
           disabled={!ready}
           className="plaidlink-primary"
         >

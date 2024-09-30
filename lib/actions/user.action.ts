@@ -12,7 +12,7 @@ import { addFundingSource, createDwollaCustomer } from "./dwolla.action";
 const {
   APPWRITE_DATABASE_ID: DATABASE_ID,
   APPWRITE_USER_COLLECTION_ID: USER_COLLECTION_ID,
-  APPWRITE_BANK_COLLECION_ID: BANK_COLLECTION_ID,
+  APPWRITE_BANK_COLLECTION_ID: BANK_COLLECTION_ID,
 } = process.env;
 
 export const signIn = async ({ email, password }: signInProps) => {
