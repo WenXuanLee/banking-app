@@ -11,7 +11,6 @@ import {
 } from "@/lib/utils";
 
 const BankInfo = ({ account, appwriteItemId, type }: BankInfoProps) => {
-  console.log('account info', account);
   const router = useRouter();
   const searchParams = useSearchParams();
 

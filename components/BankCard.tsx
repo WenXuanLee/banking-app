@@ -9,7 +9,6 @@ const BankCard = ({
   userName,
   showBalance
 }: CreditCardProps) => {
-  console.log('account', account);
   return (
     <div className="flex flex-col">
       <Link href={`/transaction-history/?id=${account.appwriteItemId}`} className="bank-card">
