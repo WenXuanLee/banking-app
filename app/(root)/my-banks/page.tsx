@@ -3,8 +3,7 @@ import HeaderBox from '@/components/HeaderBox'
 import { getAccounts } from '@/lib/actions/bank.action';
 import { getLoggedInUser } from '@/lib/actions/user.action';
 
-const MyBanks = async ({ searchParams: { id, page }}: SearchParamProps) => {
-  const currentPage = Number(page as string) || 1;
+const MyBanks = async () => {
   const loggedIn = await getLoggedInUser()
   const accounts = await getAccounts({ userId: loggedIn.$id })
 

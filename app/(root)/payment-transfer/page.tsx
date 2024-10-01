@@ -3,7 +3,7 @@ import PaymentTransferForm from '@/components/PaymentTransferForm'
 import { getAccounts } from '@/lib/actions/bank.action';
 import { getLoggedInUser } from '@/lib/actions/user.action';
 
-const PaymentTransfer = async ({ searchParams: { id, page }}: SearchParamProps) => {
+const PaymentTransfer = async () => {
   const loggedIn = await getLoggedInUser()
   const accounts = await getAccounts({ userId: loggedIn.$id })
 
