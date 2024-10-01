@@ -3,9 +3,22 @@ import HeaderBox from '@/components/HeaderBox';
 import TotalBalanceBox from '@/components/TotalBalanceBox';
 import RightSidebar from '@/components/RightSidebar';
 import { getLoggedInUser } from '@/lib/actions/user.action';
+import { getAccounts, getAccount } from '@/lib/actions/bank.action';
+import RecentTransactions from '@/components/RecentTransactions';
 
-const Home = async () => {
+const Home = async ({ searchParams: { id, page }}: SearchParamProps) => {
+  const currentPage = Number(page as string) || 1;
   const loggedIn = await getLoggedInUser()
+  const accounts = await getAccounts({ userId: loggedIn.$id })
+
+  if (!accounts) {
+    return;
+  }
+
+  const accountsData = accounts?.data;
+  const appwriteItemId = (id as string) || accountsData[0]?.appwriteItemId
+  const account = await getAccount({ appwriteItemId })
+
   return (
     <section className="home">
       <div className="home-content">
@@ -14,20 +27,25 @@ const Home = async () => {
             type="greeting"
             title="Weclome"
             subtext="Access and manage your account"
-            user={loggedIn.name} />
+            user={loggedIn.firstName} />
 
           <TotalBalanceBox
-            accounts={[]}
-            totalBanks={1}
-            totalCurrentBalance={1250}
+            accounts={accountsData}
+            totalBanks={accounts?.totalBanks}
+            totalCurrentBalance={accounts?.totalCurrentBalance}
           />
         </header>
-        RECENT TRANSCTION
+        <RecentTransactions
+          accounts={accountsData}
+          transactions={account?.transactions}
+          appwriteItemId={appwriteItemId}
+          page={currentPage}
+        />
       </div>
       <RightSidebar
-        user={{ name: loggedIn.name, email: loggedIn.email }}
-        transactions={[]}
-        banks={[{ currentBalance: 1250 }, { currentBalance: 1550 }]}
+        user={loggedIn}
+        transactions={accounts?.transactions}
+        banks={accountsData.slice(0, 2)}
       />
     </section>
   )
